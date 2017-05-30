@@ -230,7 +230,7 @@ namespace RestaurantNetCore.Controllers
                              TableID = a.TableID,
                              TableName = a.TableName
                          }).ToList();
-            return table;
+            return table.OrderBy(m => m.TableID).ToList();
         }
 
         [HttpGet]

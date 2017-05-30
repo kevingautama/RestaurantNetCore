@@ -116,7 +116,7 @@ namespace RestaurantNetCore.Controllers
                     order.OrderItem = orderitem;
                     listorderdata.Add(order);
                 }
-                item.Order = listorderdata;
+                item.Order = listorderdata.OrderBy(m => m.OrderID).ToList();
             }
             return listdata;
         }
