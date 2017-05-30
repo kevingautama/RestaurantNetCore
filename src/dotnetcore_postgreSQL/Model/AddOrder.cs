@@ -8,6 +8,7 @@ namespace RestaurantNetCore.Model
     public class AddOrder
     {
         public int OrderID { get; set; }
+        public string Name { get; set; }
         public int TypeID { get; set; }
         public string TypeName { get; set; }
         public int Status { get; set; }

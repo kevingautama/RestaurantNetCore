@@ -7,6 +7,17 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.detailorder = {};
     $scope.dataTable = [];
     $scope.order = testservice.GetOrder();
+    $scope.Name = '';
+    $scope.typeID = 0;
+    $scope.tableID = 0;
+    $scope.orderID = 0;
+    $scope.isAddOrder = false;
+
+    $scope.addOrder = function () {
+        $scope.isAddOrder = true;
+        $scope.selectedOrder = angular.copy($scope.detailorder);
+        $scope.GetMenu($scope.detailorder.TableID, $scope.detailorder.TableName, $scope.detailorder.TypeID);
+    };
 
     $scope.DetailOrder = function (id) {
         console.log(id);
@@ -28,7 +39,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
         angular.forEach($scope.detailorder.OrderItem, function (item) {
             console.log('Triggered 1');
-            $scope.grandTotal = $scope.grandTotal + item.Qty * item.Price;
+            $scope.grandTotal = $scope.grandTotal + (item.Qty * item.Price);
             console.log(item);
         });
         $scope.tax = $scope.grandTotal * 0.1;
@@ -81,7 +92,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         $scope.pay = false;
     };
 
-    function print(div) {
+    $scope.print = function (div) {
         var printContents = document.getElementById(div).innerHTML;
         var popupWin = window.open("", "");
 
@@ -89,7 +100,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             + '<link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />'
             + '</head><body onload="window.print()">' + printContents + '</body></html>');
         popupWin.document.close();
-    }
+    };
 
     $scope.GoPay = function (id, uang, total) {
 
@@ -100,7 +111,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             testservice.PayOrder({ id: id }, function (data) {
                 if (data.Status === true) {
                     console.log("Success");
-                    print('DetailOrder');
+                    $scope.print('DetailOrder');
                     $scope.order = testservice.GetOrder();
                     $scope.detailorder = null;
 
@@ -128,20 +139,125 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
     };
 
-    $scope.GetTable = function () {
+    $scope.GetTable = function (typeid) {
+        $scope.typeID = typeid;
+        console.log($scope.typeID);
         testservice.GetTable({}, function (data) {
             $scope.dataTable = data;
             console.log(data);
         });
     };
 
-    $scope.GetMenu = function () {
+    $scope.baru = {};
+    $scope.GetMenu = function (id, tablename, typeid) {
+
+        $scope.orderedItems = [];
+        $scope.Name = '';
+        //
+        $scope.tableID = id;
+        $scope.typeID = typeid;
+
+        if ($scope.isAddOrder) {
+            //$scope.orderedItems = $scope.selectedOrder.OrderItem;
+        }
+
+        $scope.baru = { "TableID": id, "TableName": tablename };
+        //
         console.log("tes");
         testservice.GetMenu({}, function (data) {
             $scope.menu = data;
-            console.log(data);
+
+            console.log('menu', data);
         });
     };
+
+    $scope.orderedItems = [];
+    console.log($scope.orderedItems);
+
+    $scope.addqty = function (item) {
+
+        if (item.Notes == null)
+            item.Notes = '';
+
+        $scope.cek = false;
+        angular.forEach($scope.orderedItems, function (obj) {
+            if (item.MenuID == obj.MenuID) {
+                $scope.cek = true;
+                obj.Qty = obj.Qty + 1;
+            }
+        });
+        if ($scope.cek == false) {
+            $scope.orderedItems.push(item);
+            item.Qty = item.Qty + 1;
+        }
+    };
+
+    $scope.delqty = function (MenuID, index) {
+        console.log(MenuID);
+        angular.forEach($scope.orderedItems, function (obj) {
+            if (MenuID == obj.MenuID) {
+                $scope.cek = true;
+                if (obj.Qty == 1) {
+                    $scope.orderedItems.splice(index, 1);
+                } else {
+                    obj.Qty = obj.Qty - 1;
+                }
+            }
+        });
+    };
+
+    $scope.new = {};
+    $scope.CreateOrder = function () {
+        //console.log($s, tableid)
+
+        // Ini untuk add order
+        if ($scope.isAddOrder) {
+
+            // object yg d post
+            console.log($scope.selectedOrder);
+
+            //api post disini
+
+
+            // kosongin
+            $scope.isAddOrder = false;
+            $scope.selectedOrder = {};
+
+        } else { // create order
+            console.log('trigger');
+
+            $scope.new = {
+                "Name": $scope.Name,
+                "TypeID": $scope.typeID,
+                "TableID": $scope.tableID,
+                "OrderItem": $scope.orderedItems
+            };
+            console.log($scope.new);
+
+            testService.Name = $scope.Name;
+            testService.TypeID = $scope.typeID;
+            testService.TableID = $scope.tableID;
+            testService.OrderItem = $scope.orderedItems;
+
+            //testservice.data = $scope.new;
+            testService.$NewOrder().then(function (data) {
+                console.log(data);
+                $scope.order = testservice.GetOrder();
+                $scope.detailorder = null;
+            });
+        }
+    };
+
+    // create function order
+    // API post model order
+
+    // create function
+
+    //$scope.newOrder = {
+    //    TableID : tableid,
+    //    TypeID : typeid,
+    //    OrderItem : $scope.orderedItems
+    //};
 
     //----------------------------------------Kitchen------------------------------------------------------------
 
@@ -210,13 +326,13 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             $scope.kitchenprint = obj;
             console.log($scope.kitchenprint);
             $timeout(function () {
-                print('printkitchen');
+                $scope.print('printkitchen');
             }, 500);
 
 
         });
 
-    }
+    };
 
 
 

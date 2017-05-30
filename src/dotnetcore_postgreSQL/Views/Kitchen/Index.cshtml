@@ -30,7 +30,7 @@
                             </tbody>
 
                             <tr ng-if="data.Status == 'Cook'">
-                                <td colspan="3"><button class="btn btn-primary btn-block" ng-click="printkitchen(order.OrderID)">Print</button></td>
+                                <td colspan="3"><button class="btn btn-primary btn-block" ng-click="printkitchen(order.OrderID)" >Print</button></td>
                             </tr>
 
 
@@ -39,7 +39,11 @@
                 </div>
             </div>
         </div>
+        <div ng-show="data.Order == false">
+            <h1>Empty List</h1>
+        </div>
     </div>
+    
 </div>
 
 <div id="printkitchen" ng-hide="true">

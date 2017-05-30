@@ -22,6 +22,9 @@ service.factory('testservice', function ($resource) {
         },
         GetMenu: {
             method: 'GET', params: { action: 'GetMenu' }
+        },
+        NewOrder: {
+            method: 'POST', params: { action: 'CreateOrder' }
         }
     });
 });

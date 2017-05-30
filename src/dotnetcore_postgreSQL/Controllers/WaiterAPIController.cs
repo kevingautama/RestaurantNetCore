@@ -234,15 +234,14 @@ namespace RestaurantNetCore.Controllers
         }
 
         [HttpGet]
-        [Route("GetMenu/{id}")]
-        public AddOrder GetMenu(int? id)
+        [Route("GetMenu")]
+        public AddOrder GetMenu()
         {
             AddOrder AddOrder = new AddOrder();
-            AddOrder.TableID = id;
 
-            var category = from a in _context.Category
+            var category = (from a in _context.Category
                            where a.IsDeleted != true
-                           select a;
+                           select a).ToList();
 
             List<CategoryViewModel> ListCategoryViewModel = new List<CategoryViewModel>();
             foreach (var item in category)
@@ -266,6 +265,95 @@ namespace RestaurantNetCore.Controllers
 
             AddOrder.Category = ListCategoryViewModel;
             return AddOrder;
+        }
+
+        [HttpPost]
+        [Route("CreateOrder")]
+        
+        public ResponseViewModel CreateOrder([FromBody]AddOrder data)
+        {
+            var type = _context.Type.Find(data.TypeID).TypeName;
+            if (type == "Order")
+            {
+                if (_context.Table.Find(data.TableID).TableStatus == "NotOccupied")
+                {
+                    Table Table = _context.Table.Find(data.TableID);
+                    Table.TableStatus = "Occupied";
+                    _context.Entry(Table).State = EntityState.Modified;
+
+                    Order order = new Order();
+                    order.Finish = false;
+                    order.IsDeleted = false;
+                    order.OrderDate = DateTime.Now;
+                    order.CreatedBy = "Admin";
+                    order.CreatedDate = DateTime.Now;
+                    order.TypeID = data.TypeID;
+                    _context.Order.Add(order);
+                    foreach (var item2 in data.OrderItem)
+                    {
+                        if (item2.Qty > 0)
+                        {
+                            OrderItem OrderItem = new OrderItem();
+                            OrderItem.OrderID = order.OrderID;
+                            OrderItem.MenuID = item2.MenuID;
+                            OrderItem.Qty = item2.Qty;
+                            OrderItem.Notes = item2.Notes;
+                            OrderItem.CreatedBy = "Admin";
+                            OrderItem.CreatedDate = DateTime.Now;
+                            OrderItem.Status = "Order";
+                            _context.OrderItem.Add(OrderItem);
+                        }
+                    }
+                    Track Track = new Track();
+                    Track.OrderID = order.OrderID;
+                    Track.TableID = Table.TableID;
+                    Track.CreatedBy = "Admin";
+                    Track.CreatedDate = DateTime.Now;
+                    _context.Track.Add(Track);
+                }
+            }
+            else if (type == "TakeAway")
+            {
+                Order order = new Order();
+                order.Name = data.Name;
+                order.OrderDate = DateTime.Now;
+                order.TypeID = data.TypeID;
+                order.Finish = false;
+                order.CreatedBy = "Admin";
+                order.CreatedDate = DateTime.Now;
+                order.IsDeleted = false;
+                _context.Order.Add(order);
+                foreach (var item2 in data.OrderItem)
+                {
+                    if (item2.Qty > 0)
+                    {
+                        OrderItem orderitem = new OrderItem();
+                        orderitem.OrderID = order.OrderID;
+                        orderitem.MenuID = item2.MenuID;
+                        orderitem.Qty = item2.Qty;
+                        orderitem.Notes = item2.Notes;
+                        orderitem.Status = "Order";
+                        orderitem.CreatedBy = "Admin";
+                        orderitem.CreatedDate = DateTime.Now;
+                        _context.OrderItem.Add(orderitem);
+                    }
+                }
+            }
+
+            if (_context.SaveChanges() > 0)
+            {
+                return new ResponseViewModel
+                {
+                    Status = true
+                };
+            }
+            else
+            {
+                return new ResponseViewModel
+                {
+                    Status = false
+                };
+            }
         }
     }
 }
