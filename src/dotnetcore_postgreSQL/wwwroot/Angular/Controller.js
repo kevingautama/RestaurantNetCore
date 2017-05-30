@@ -13,9 +13,11 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.orderID = 0;
     $scope.isAddOrder = false;
 
-    $scope.addOrder = function () {
+    $scope.addOrder = function (id) {
+        console.log(id);
+        $scope.orderID = id;
         $scope.isAddOrder = true;
-        $scope.selectedOrder = angular.copy($scope.detailorder);
+        //$scope.selectedOrder = angular.copy($scope.detailorder);
         $scope.GetMenu($scope.detailorder.TableID, $scope.detailorder.TableName, $scope.detailorder.TypeID);
     };
 
@@ -214,14 +216,26 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         if ($scope.isAddOrder) {
 
             // object yg d post
-            console.log($scope.selectedOrder);
-
+            //console.log($scope.selectedOrder);
+            $scope.new = {
+                "OrderID": $scope.orderID,
+                "OrderItem": $scope.orderedItems
+            }
             //api post disini
 
+            testservice.AddOrder($scope.new, function (data) {
+                console.log($scope.new);
+                console.log(data);
+                $scope.order = testservice.GetOrder();
+                $scope.detailorder = null;
+                $scope.isAddOrder = false;
+                $scope.selectedOrder = {};
+                $scope.new = {};
+            })
 
             // kosongin
-            $scope.isAddOrder = false;
-            $scope.selectedOrder = {};
+            //$scope.isAddOrder = false;
+            //$scope.selectedOrder = {};
 
         } else { // create order
             console.log('trigger');
