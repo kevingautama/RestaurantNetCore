@@ -312,18 +312,27 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
     $scope.FinishOrderItem = function (id) {
         console.log(id);
-        kitchenservice.FinishOrderItem({ id: id }, function (data) {
-            if (data.Status === true) {
-                console.log("Success");
-                $scope.kitchenorderitem = kitchenservice.GetAllOrderItem();
-                $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
-            } else {
-                console.log("Failed");
-                $scope.kitchenorderitem = kitchenservice.GetAllOrderItem();
-                $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
-            }
-        });
+        kitchenservice.GetOrderItemPrint({ id: id }, function (obj) {
+            $scope.kitchenprint = obj;
+            console.log($scope.kitchenprint);
+            $timeout(function () {
+                $scope.print('printkitchen');
+                kitchenservice.FinishOrderItem({ id: id }, function (data) {
+                    if (data.Status === true) {
+                        console.log("Success");
+                        $scope.kitchenorderitem = kitchenservice.GetAllOrderItem();
+                        $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
+                    } else {
+                        console.log("Failed");
+                        $scope.kitchenorderitem = kitchenservice.GetAllOrderItem();
+                        $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
+                    }
+                });
+            }, 500);
+            
 
+        });
+        
     };
 
     $scope.GetOrderItemByOrderID = function (id) {
@@ -336,13 +345,17 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.printkitchen = function (id) {
 
         console.log(id);
-        kitchenservice.GetOrderItemPrint({ id: id }, function (obj) {
+        kitchenservice.GetAllOrderItemPrint({ id: id }, function (obj) {
             $scope.kitchenprint = obj;
             console.log($scope.kitchenprint);
             $timeout(function () {
                 $scope.print('printkitchen');
             }, 500);
         });
+        kitchenservice.FinishAllOrderItem({ id: id }, function (response) {
+            console.log(response);
+            $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
+        })
 
     };
 });

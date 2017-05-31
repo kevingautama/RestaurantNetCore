@@ -122,8 +122,8 @@ namespace RestaurantNetCore.Controllers
         }
 
 
-        [Route("GetOrderItemPrint/{id}")]
-        public OrderViewModel GetOrderItemPrint(int id)
+        [Route("GetAllOrderItemPrint/{id}")]
+        public OrderViewModel GetAllOrderItemPrint(int id)
         {
             OrderViewModel data = new OrderViewModel();
             var order = _context.Order.Find(id);
@@ -134,6 +134,28 @@ namespace RestaurantNetCore.Controllers
                               select a.Table.TableName).FirstOrDefault();
             var orderitem = (from a in _context.OrderItem
                              where a.IsDeleted != true && a.Status == "Cook" && a.OrderID == order.OrderID
+                             select new OrderItemViewModel
+                             {
+                                 MenuName = a.Menu.MenuName,
+                                 Qty = a.Qty,
+                                 Notes = a.Notes
+                             }).ToList();
+            data.OrderItem = orderitem;
+            return data;
+        }
+        [Route("GetOrderItemPrint/{id}")]
+        public OrderViewModel GetOrderItemPrint(int id)
+        {
+            var item = _context.OrderItem.Find(id);
+            OrderViewModel data = new OrderViewModel();
+            var order = _context.Order.Find(item.OrderID);
+            data.Name = order.Name;
+            data.OrderID = order.OrderID;
+            data.TableName = (from a in _context.Track
+                              where a.OrderID == order.OrderID
+                              select a.Table.TableName).FirstOrDefault();
+            var orderitem = (from a in _context.OrderItem
+                             where a.IsDeleted != true && a.Status == "Cook" && a.OrderID == order.OrderID && a.OrderItemID == id
                              select new OrderItemViewModel
                              {
                                  MenuName = a.Menu.MenuName,
@@ -200,6 +222,34 @@ namespace RestaurantNetCore.Controllers
             }
 
             return order;
+        }
+
+        [HttpPost]
+        [Route("FinishAllOrderItem/{id}")]
+        public ResponseViewModel FinishAllOrderItem(int id)
+        {
+            var orderitem = (from a in _context.OrderItem
+                            where a.IsDeleted != true && a.Status == "Cook" && a.OrderID == id
+                            select a).ToList();
+            foreach(var item in orderitem)
+            {
+                item.Status = "FinishCook";
+                _context.Update(item);
+            }
+            if(_context.SaveChanges() == orderitem.Count)
+            {
+                return new ResponseViewModel
+                {
+                    Status = true
+                };
+            }else
+            {
+                return new ResponseViewModel
+                {
+                    Status = false
+                };
+            }
+            
         }
     }
 }
