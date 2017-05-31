@@ -95,7 +95,7 @@ namespace RestaurantNetCore.Controllers
         {
             OrderViewModel data = new OrderViewModel();
             var order = _context.Order.Find(id);
-
+            data.Name = order.Name;
             data.OrderID = order.OrderID;
             data.OrderDate = order.CreatedDate;
             data.TypeID = order.TypeID;
