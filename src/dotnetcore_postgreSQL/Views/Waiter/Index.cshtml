@@ -71,7 +71,21 @@
     </div>
     <div class="col-md-6" style="background-color:#ecf0f1;">
         <div class="col-md-12" ng-if="detailorder.OrderID != null">
-            <h4>Detail Order <button ng-click="addOrder(detailorder.OrderID)" data-toggle="modal" data-target="#myModal2" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add Order </button><button ng-click="edit()" ng-hide="test === true" class="btn btn-primary" @*data-toggle="modal" data-target="#ModalEdit" *@><i class="glyphicon glyphicon-edit"></i>Edit </button><button ng-show="test === true" ng-click="save()" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> Save</button></h4>
+            <h4>
+                Detail Order
+                <button ng-click="addOrder(detailorder.OrderID)" data-toggle="modal" data-target="#myModal2" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    Add Order
+                </button>
+                <button ng-click="edit()" ng-hide="isEditMode === true" class="btn btn-primary" @*data-toggle="modal" data-target="#ModalEdit" *@>
+                    <i class="glyphicon glyphicon-edit"></i>
+                    Edit
+                </button>
+                <button ng-show="isEditMode === true" ng-click="save()" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-floppy-save"></i>
+                    Save
+                </button>
+            </h4>
             <div class="row">
                 <div class="col-md-6">
                     <h5><b>Order No : {{detailorder.OrderID}}</b></h5>
@@ -109,17 +123,19 @@
                             <td>
                                 <span ng-if="item.Status == 'Order' || item.Status == 'Cook' || item.Status == 'FinishCook'" class="label label-primary">{{item.Status}}</span>
                                 <span ng-if="item.Status == 'Served'" class="label label-success">{{item.Status}}</span>
-
                             </td>
-                            <td>{{item.Qty}}</td>
+                            <td ng-show="!isEditMode">{{item.Qty}}</td>
+                            <td ng-show="isEditMode && item.Status == 'Order'"><button class="btn btn-primary btn-sm" ng-click="EditQtyMinus($index)"><i class="glyphicon glyphicon-minus"></i></button><label style="padding-left:2px; padding-right:2px">{{item.Qty}}</label><button class="btn btn-primary btn-sm" ng-click="EditQtyPlus($index)"><i class="glyphicon glyphicon-plus"></i></button></td>
+                            <td ng-show="isEditMode && item.Status != 'Order'">{{item.Qty}}</td>
                             <td>{{item.Price}}</td>
                             <td>{{item.Price*item.Qty}}</td>
-                            <td>{{item.Notes}}</td>
+                            <td ng-show="!isEditMode">{{item.Notes}}</td>
+                            <td ng-show="isEditMode && item.Status == 'Order'"><input class="form-control" ng-model="item.Notes" /></td>
+                            <td ng-show="isEditMode && item.Status != 'Order'">{{item.Notes}}</td>
                             <td>
                                 <button ng-if="item.Status == 'Order'" ng-click="cancel(item.OrderItemID,detailorder.OrderID)" class="btn btn-danger btn-xs btn-block">Cancel</button>
                                 <button ng-if="item.Status == 'FinishCook'" ng-click="serve(item.OrderItemID,detailorder.OrderID)" class="btn btn-primary btn-xs btn-block">Served</button>
                             </td>
-
                         </tr>
                     </table>
                     <table class="table table-responsive table-bordered ">
@@ -283,8 +299,8 @@
                                                 <td>{{item.MenuName}}</td>
                                                 <td>{{item.Qty}}</td>
                                                 <td>{{item.Price * item.Qty}}</td>
-                                                <td><input ng-model="item.Notes" /></td>
-                                                <td><button class="btn btn-primary" style="height:6vh;" ng-click="delqty(item.MenuID, $index)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                                                <td><input class="form-control" ng-model="item.Notes" /></td>
+                                                <td><button class="btn btn-primary" ng-click="delqty(item.MenuID, $index)"><i class="glyphicon glyphicon-remove"></i></button></td>
                                             </tr>
                                             <tr>
                                                 <td><button type="button" class="btn btn-primary">Drag Your Order Here</button></td>
