@@ -394,6 +394,7 @@ namespace RestaurantNetCore.Controllers
 
         [HttpPost]
         [Route("EditOrder")]
+        public ResponseViewModel EditOrder([FromBody]AddOrder data)
         {
 
             foreach (var item2 in data.OrderItem)
