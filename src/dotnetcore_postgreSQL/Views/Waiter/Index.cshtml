@@ -256,8 +256,13 @@
                     <h4>{{baru.TableName}}</h4>
                 </div>
                 <div ng-show="typeID == 2">
-                    <h4 class="modal-title">Input Name Here</h4>
-                    <input ng-model="Name" />
+                    <div ng-if="!isAddOrder">
+                        <h4 class="modal-title">Input Name Here</h4>
+                        <input ng-model="Name" />
+                    </div>
+                    <div ng-if="isAddOrder">
+                        <h4 class="modal-title">{{Name}}</h4>
+                    </div>
                 </div>
                 <p>Choose Menu</p>
             </div>
