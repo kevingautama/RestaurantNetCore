@@ -342,13 +342,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             $timeout(function () {
                 $scope.print('printkitchen');
             }, 500);
-
-
         });
 
     };
-
-
-
-
 });

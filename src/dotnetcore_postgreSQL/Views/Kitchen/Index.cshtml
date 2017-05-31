@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutNoContainer.cshtml";
 }
 
-<h2>IndexAPI2</h2>
+<h2>Kitchen</h2>
 <div class="col-md-6" ng-repeat="data in kitchenorderitemcatebyorder">
     <h3>{{data.Status}}</h3>
     <div class="row" style="overflow-x:auto;white-space:nowrap;direction:rtl">
@@ -23,7 +23,7 @@
                                         <button ng-if="data.Status == 'Cook'" class="btn btn-success" ng-click="FinishOrderItem(item.OrderItemID)">Done</button>
                                     </td>
                                 </tr>
-                                <tr ng-if="item.Notes != null">
+                                <tr ng-if="item.Notes != ''">
                                     <td colspan="3" style="color:gray">{{item.Notes}}</td>
                                 </tr>
 
