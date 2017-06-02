@@ -186,15 +186,22 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
     $scope.cancel = function (orderItemId, orderId) {
         console.log(orderItemId + "," + orderId);
-        testservice.CancelOrder({ id: orderItemId }, function (data) {
-            if (data.Status === true) {
-                $scope.detailorder = {};
-                $scope.DetailOrder(orderId);
-                $scope.order = testservice.GetOrder();
-            }
-            //$scope.status = data;
-            console.log(data);
-        });
+        if ($scope.detailorder.OrderItem.length == 1) {
+            alert('Order Tidak Bisa Di cancel');
+            $scope.DetailOrder(orderId);
+            $scope.order = testservice.GetOrder();
+        } else {
+            testservice.CancelOrder({ id: orderItemId }, function (data) {
+                if (data.Status === true) {
+                    $scope.detailorder = {};
+                    $scope.DetailOrder(orderId);
+                    $scope.order = testservice.GetOrder();
+                }
+                //$scope.status = data;
+                console.log(data);
+            });
+        };
+       
 
     };
 
