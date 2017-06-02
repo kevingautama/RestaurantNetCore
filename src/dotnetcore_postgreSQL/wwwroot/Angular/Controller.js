@@ -297,26 +297,32 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
         } else { // create order
             console.log('trigger');
+            if ($scope.orderedItems < 1) {
+                
+                alert('silahkan pilih menu');
+            } else {
+                
+                $scope.new = {
+                    "Name": $scope.Name,
+                    "TypeID": $scope.typeID,
+                    "TableID": $scope.tableID,
+                    "OrderItem": $scope.orderedItems
+                };
+                console.log($scope.new);
 
-            $scope.new = {
-                "Name": $scope.Name,
-                "TypeID": $scope.typeID,
-                "TableID": $scope.tableID,
-                "OrderItem": $scope.orderedItems
-            };
-            console.log($scope.new);
+                testService.Name = $scope.Name;
+                testService.TypeID = $scope.typeID;
+                testService.TableID = $scope.tableID;
+                testService.OrderItem = $scope.orderedItems;
 
-            testService.Name = $scope.Name;
-            testService.TypeID = $scope.typeID;
-            testService.TableID = $scope.tableID;
-            testService.OrderItem = $scope.orderedItems;
-
-            //testservice.data = $scope.new;
-            testService.$NewOrder().then(function (data) {
-                console.log(data);
-                $scope.order = testservice.GetOrder();
-                $scope.detailorder = null;
-            });
+                //testservice.data = $scope.new;
+                testService.$NewOrder().then(function (data) {
+                    console.log(data);
+                    $scope.order = testservice.GetOrder();
+                    $scope.detailorder = null;
+                    $('#myModal2').modal('hide');
+                });
+            }            
         }
     };
 

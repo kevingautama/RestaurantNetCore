@@ -250,7 +250,7 @@ namespace RestaurantNetCore.Controllers
                 CategoryViewModel.CategoryID = item.CategoryID;
                 CategoryViewModel.CategoryName = item.CategoryName;
                 var listmenu = (from a in _context.Menu
-                                where a.CategoryID == item.CategoryID && a.Status.StatusName == "Ready"
+                                where a.CategoryID == item.CategoryID && a.Status.StatusName == "Ready" && a.IsDeleted != true
                                 select new OrderItemViewModel
                                 {
                                     MenuID = a.MenuID,
