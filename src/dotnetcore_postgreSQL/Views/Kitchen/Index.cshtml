@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutNoContainer.cshtml";
 }
 
-<h2>Kitchen</h2>
+
 <div class="col-md-6" ng-repeat="data in kitchenorderitemcatebyorder">
     <h3>{{data.Status}}</h3>
     <div class="row" style="overflow-x:auto;white-space:nowrap;direction:rtl">
@@ -12,9 +12,9 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">{{order.TableName}}{{order.Name}}</div>
                 <div class="panel-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="max-height:60vh;overflow: auto;white-space:nowrap">
                         <table class="table ">
-                            <tbody ng-repeat="item in order.OrderItem">
+                            <tbody ng-repeat="item in order.OrderItem" >
                                 <tr>
                                     <td>{{item.Qty}}</td>
                                     <td>{{item.MenuName}}</td>
@@ -31,6 +31,9 @@
 
                             <tr ng-if="data.Status == 'Cook'">
                                 <td colspan="3"><button class="btn btn-primary btn-block" ng-click="printkitchen(order.OrderID)" >All Done</button></td>
+                            </tr>
+                            <tr ng-if="data.Status == 'Order'">
+                                <td colspan="3"><button class="btn btn-primary btn-block" ng-click="cookall(order.OrderID)">All Cook</button></td>
                             </tr>
 
 

@@ -13,6 +13,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.orderID = 0;
     $scope.isAddOrder = false;
     $scope.isEditMode = false;
+    $scope.isEditAllMode = false;
 
     $scope.addOrder = function (id) {
         console.log(id);
@@ -25,6 +26,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.DetailOrder = function (id) {
         console.log(id);
         $scope.isEditMode = false;
+        $scope.isEditAllMode = false;
         $scope.pay = false;
         $scope.Name = '';
         testService.$DetailOrder({ id: id }, function (data) {
@@ -57,6 +59,13 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         console.log($scope.test);
     };
 
+    $scope.editall = function () {
+        $scope.test = true;
+        $scope.isEditAllMode = true;
+        console.log('trigger');
+        console.log($scope.test);
+    };
+
     $scope.EditQtyPlus = function (index) {
 
         $scope.detailorder.OrderItem[index].Qty++;
@@ -80,6 +89,27 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         testservice.EditOrder($scope.new, function (data) {
             $scope.new = {};
             $scope.isEditMode = false;
+            $scope.isEditAllMode = false;
+            $scope.order = testservice.GetOrder();
+            $scope.detailorder = null;
+        })
+        //console.log($scope.test);
+    };
+
+    $scope.saveall = function () {
+
+        $scope.new = {
+            "OrderID": $scope.detailorder.OrderID,
+            "OrderItem": $scope.detailorder.OrderItem
+        }
+        //api post disini
+        //console.log($scope.detailorder);
+        testservice.EditAllOrder($scope.new, function (data) {
+            $scope.new = {};
+            $scope.isEditMode = false;
+            $scope.isEditAllMode = false;
+            $scope.order = testservice.GetOrder();
+            $scope.detailorder = null;
         })
         //console.log($scope.test);
     };
@@ -379,11 +409,20 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             $timeout(function () {
                 $scope.print('printkitchen');
             }, 500);
+            kitchenservice.FinishAllOrderItem({ id: id }, function (response) {
+                console.log(response);
+                $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
+            })
         });
-        kitchenservice.FinishAllOrderItem({ id: id }, function (response) {
-            console.log(response);
-            $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
-        })
+       
 
     };
+
+    $scope.cookall = function (id) {
+        console.log(id);
+        kitchenservice.CookAllOrderItem({ id: id }, function (data) {
+            console.log(data);
+            $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
+        })
+    }
 });

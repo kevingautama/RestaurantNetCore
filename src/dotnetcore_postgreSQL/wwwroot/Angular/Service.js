@@ -31,6 +31,9 @@ service.factory('testservice', function ($resource) {
         },
         EditOrder: {
             method: 'POST', params: { action: 'EditOrder' }
+        },
+        EditAllOrder: {
+            method: 'POST', params: { action: 'EditAllOrder' }
         }
     });
 });
@@ -66,6 +69,9 @@ service.factory('kitchenservice', function ($resource) {
         },
         FinishAllOrderItem: {
             method: 'POST', params: {action: 'FinishAllOrderItem'}
+        },
+        CookAllOrderItem: {
+            method: 'POST', params: {action : 'CookAllOrderItem'}
         }
     });
 });

@@ -63,7 +63,7 @@ namespace RestaurantNetCore.Controllers
         [Route("FinishOrderItem/{id}")]
         public ResponseViewModel FinishOrderItem(int id)
         {
-            var data = _context.OrderItem.SingleOrDefault(m => m.OrderItemID == id);
+            var data = _context.OrderItem.SingleOrDefault(m => m.OrderItemID == id && m.IsDeleted != true);
 
             if (data.Status == "Cook")
             {
@@ -75,6 +75,33 @@ namespace RestaurantNetCore.Controllers
             else
             {
                 return new ResponseViewModel { Status = false };
+            }
+        }
+
+        [Route("CookAllOrderItem/{id}")]
+        public ResponseViewModel CookAllOrderItem(int id)
+        {
+            var orderitem = (from a in _context.OrderItem
+                             where a.IsDeleted != true && a.Status == "Order" && a.OrderID == id
+                             select a).ToList();
+            foreach (var item in orderitem)
+            {
+                item.Status = "Cook";
+                _context.Update(item);
+            }
+            if (_context.SaveChanges() == orderitem.Count)
+            {
+                return new ResponseViewModel
+                {
+                    Status = true
+                };
+            }
+            else
+            {
+                return new ResponseViewModel
+                {
+                    Status = false
+                };
             }
         }
 

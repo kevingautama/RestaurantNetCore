@@ -431,5 +431,45 @@ namespace RestaurantNetCore.Controllers
                 };
             }
         }
+
+        [HttpPost]
+        [Route("EditAllOrder")]
+        public ResponseViewModel EditAllOrder([FromBody]AddOrder data)
+        {
+
+            foreach (var item2 in data.OrderItem)
+            {
+                if (item2.Qty > 0)
+                {
+                    OrderItem orderitem = new OrderItem();
+                    orderitem = _context.OrderItem.Find(item2.OrderItemID);
+                    //orderitem.OrderID = data.OrderID;
+                    //orderitem.MenuID = item2.MenuID;
+                    orderitem.Qty = item2.Qty;
+                    orderitem.Notes = item2.Notes;
+                    //orderitem.Status = "Order";
+                    orderitem.UpdatedBy = "Admin";
+                    orderitem.UpdatedDate = DateTime.Now;
+                    //orderitem.CreatedBy = "Admin";
+                    //orderitem.CreatedDate = DateTime.Now;
+                    _context.Entry(orderitem).State = EntityState.Modified;
+                }
+            }
+
+            if (_context.SaveChanges() > 0)
+            {
+                return new ResponseViewModel
+                {
+                    Status = true
+                };
+            }
+            else
+            {
+                return new ResponseViewModel
+                {
+                    Status = false
+                };
+            }
+        }
     }
 }
