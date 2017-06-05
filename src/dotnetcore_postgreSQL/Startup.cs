@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RestaurantNetCore.Context;
 using Microsoft.EntityFrameworkCore;
+using RestaurantNetCore.Model;
 
 namespace RestaurantNetCore
 {
@@ -22,6 +23,7 @@ namespace RestaurantNetCore
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+           
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -63,6 +65,10 @@ namespace RestaurantNetCore
 
 
             services.AddMvc();
+
+            var appSettings = Configuration.GetSection("AppSettings");
+
+            services.Configure<AppSetting>(appSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

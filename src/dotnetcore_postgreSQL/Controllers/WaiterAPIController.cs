@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantNetCore.Context;
 using RestaurantNetCore.Model;
 using RestaurantNetCore.Service;
+using Microsoft.Extensions.Options;
 
 namespace RestaurantNetCore.Controllers
 {
@@ -16,16 +17,32 @@ namespace RestaurantNetCore.Controllers
     public class WaiterAPIController : Controller
     {
         private readonly dbContext _context;
+        private readonly AppSetting _settings;
 
-        public WaiterAPIController(dbContext context)
+        public WaiterAPIController(dbContext context, IOptions<AppSetting> settings)
         {
             _context = context;
-            
+            _settings = settings.Value;
+        }
+
+        [Route("InfoRestaurant")]
+        public AppSetting InfoRestaurant()
+        {
+            return new AppSetting
+            {
+                HeaderLine1 = _settings.HeaderLine1,
+                HeaderLine2 = _settings.HeaderLine2,
+                HeaderLine3 = _settings.HeaderLine3,
+                FooterLine1 = _settings.FooterLine1,
+                FooterLine2 = _settings.FooterLine2,
+                FooterLine3 = _settings.FooterLine3
+            };
         }
 
         [Route("GetOrder")]
         public List<OrderType> GetOrder()
         {
+          
             List<OrderType> listdata = new List<OrderType>();
 
             listdata = (from a in _context.Type

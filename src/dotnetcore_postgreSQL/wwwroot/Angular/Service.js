@@ -34,6 +34,9 @@ service.factory('testservice', function ($resource) {
         },
         EditAllOrder: {
             method: 'POST', params: { action: 'EditAllOrder' }
+        },
+        InfoRestaurant: {
+            method: 'GET', params: { action: 'InfoRestaurant' }
         }
     });
 });
