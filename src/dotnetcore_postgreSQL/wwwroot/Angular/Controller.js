@@ -47,7 +47,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
         angular.forEach($scope.detailorder.OrderItem, function (item) {
             console.log('Triggered 1');
-            $scope.grandTotal = $scope.grandTotal + (item.Qty * item.Price);
+            $scope.grandTotal = $scope.grandTotal + item.Qty * item.Price;
             console.log(item);
         });
         $scope.tax = $scope.grandTotal * 0.1;
@@ -75,7 +75,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.EditQtyMinus = function (index) {
         if ($scope.detailorder.OrderItem[index].Qty > 1) {
             $scope.detailorder.OrderItem[index].Qty--;
-        };
+        }
     };
 
     $scope.save = function () {
@@ -83,7 +83,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         $scope.new = {
             "OrderID": $scope.detailorder.OrderID,
             "OrderItem": $scope.detailorder.OrderItem
-        }
+        };
         //api post disini
         //console.log($scope.detailorder);
         testservice.EditOrder($scope.new, function (data) {
@@ -92,7 +92,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             $scope.isEditAllMode = false;
             $scope.order = testservice.GetOrder();
             $scope.detailorder = null;
-        })
+        });
         //console.log($scope.test);
     };
 
@@ -101,7 +101,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         $scope.new = {
             "OrderID": $scope.detailorder.OrderID,
             "OrderItem": $scope.detailorder.OrderItem
-        }
+        };
         //api post disini
         //console.log($scope.detailorder);
         testservice.EditAllOrder($scope.new, function (data) {
@@ -110,7 +110,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             $scope.isEditAllMode = false;
             $scope.order = testservice.GetOrder();
             $scope.detailorder = null;
-        })
+        });
         //console.log($scope.test);
     };
 
@@ -152,13 +152,26 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     };
 
     $scope.print = function (div) {
-        var printContents = document.getElementById(div).innerHTML;
-        var popupWin = window.open("", "");
+        testservice.InfoRestaurant(function (data) {
+            $scope.info = data;
+            var printContents = document.getElementById(div).innerHTML;
 
-        popupWin.document.write('<html><head><title>Restaurant</title>'
-            + '<link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />'
-            + '</head><body onload="window.print()">' + printContents + '</body></html>');
-        popupWin.document.close();
+            var popupWin = window.open("", "");
+
+            popupWin.document.write('<html><head><title>Restaurant</title>'
+                + '<link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />'
+                + '</head><body onload="window.print()"><center>'
+                + '<div class="row"><h4>' + $scope.info.HeaderLine1 + '</h4></div>'
+                + '<div class="row"><h4>' + $scope.info.HeaderLine2 + '</h4></div>'
+                + '<div class="row"><h4>' + $scope.info.HeaderLine3 + '</h4></div>'
+                + '</center>' + printContents + '<center>'
+                + '<div class="row"><h4>' + $scope.info.FooterLine1 + '</h4></div>'
+                + '<div class="row"><h4>' + $scope.info.FooterLine2 + '</h4></div>'
+                + '<div class="row"><h4>' + $scope.info.FooterLine3 + '</h4></div>'
+                + '</body></html>');
+            popupWin.document.close();
+        })
+       
     };
 
     $scope.GoPay = function (id, uang, total) {
@@ -186,7 +199,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
     $scope.cancel = function (orderItemId, orderId) {
         console.log(orderItemId + "," + orderId);
-        if ($scope.detailorder.OrderItem.length == 1) {
+        if ($scope.detailorder.OrderItem.length === 1) {
             alert('Order Tidak Bisa Di cancel');
             $scope.DetailOrder(orderId);
             $scope.order = testservice.GetOrder();
@@ -200,7 +213,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                 //$scope.status = data;
                 console.log(data);
             });
-        };
+        }
        
 
     };
@@ -285,7 +298,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             $scope.new = {
                 "OrderID": $scope.orderID,
                 "OrderItem": $scope.orderedItems
-            }
+            };
             //api post disini
 
             testservice.AddOrder($scope.new, function (data) {
@@ -296,7 +309,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                 $scope.isAddOrder = false;
                 $scope.selectedOrder = {};
                 $scope.new = {};
-            })
+            });
 
             // kosongin
             //$scope.isAddOrder = false;
@@ -330,7 +343,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                     $scope.order = testservice.GetOrder();
                     $scope.detailorder = null;
                   
-                    angular.element('#myModal2').modal('hide');
+               
                 });
             }            
         }
@@ -428,7 +441,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
             kitchenservice.FinishAllOrderItem({ id: id }, function (response) {
                 console.log(response);
                 $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
-            })
+            });
         });
        
 
@@ -439,6 +452,6 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         kitchenservice.CookAllOrderItem({ id: id }, function (data) {
             console.log(data);
             $scope.kitchenorderitemcatebyorder = kitchenservice.GetAllOrderItemCateByOrder();
-        })
-    }
+        });
+    };
 });
