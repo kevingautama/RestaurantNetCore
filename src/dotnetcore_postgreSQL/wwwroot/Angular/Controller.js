@@ -15,6 +15,17 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.isEditMode = false;
     $scope.isEditAllMode = false;
 
+    $scope.reset = function () {
+        $scope.Name = '';
+        $scope.typeID = 0;
+        $scope.tableID = 0;
+        $scope.orderID = 0;
+        $scope.isAddOrder = false;
+        $scope.isEditMode = false;
+        $scope.isEditAllMode = false;
+        $scope.detailorder = {};
+    }
+
     $scope.addOrder = function (id) {
         console.log(id);
         $scope.orderID = id;
@@ -289,63 +300,60 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.new = {};
     $scope.CreateOrder = function () {
         //console.log($s, tableid)
+        if ($scope.orderedItems < 1) {
 
-        // Ini untuk add order
-        if ($scope.isAddOrder) {
+            alert('silahkan pilih menu');
+        } else {
+            if ($scope.isAddOrder) {
+                if ($scope.Name = '') {
+                    alert('Silahkan isi nama');
+                } else {
+                    $scope.new = {
+                        "OrderID": $scope.orderID,
+                        "OrderItem": $scope.orderedItems
+                    }
+                    //api post disini
 
-            // object yg d post
-            //console.log($scope.selectedOrder);
-            $scope.new = {
-                "OrderID": $scope.orderID,
-                "OrderItem": $scope.orderedItems
-            };
-            //api post disini
-
-            testservice.AddOrder($scope.new, function (data) {
-                console.log($scope.new);
-                console.log(data);
-                $scope.order = testservice.GetOrder();
-                $scope.detailorder = null;
-                $scope.isAddOrder = false;
-                $scope.selectedOrder = {};
-                $scope.new = {};
-            });
-
-            // kosongin
-            //$scope.isAddOrder = false;
-            //$scope.selectedOrder = {};
-
-        } else { // create order
-            console.log('trigger');
-            if ($scope.orderedItems < 1) {
+                    testservice.AddOrder($scope.new, function (data) {
+                        console.log($scope.new);
+                        console.log(data);
+                        $scope.order = testservice.GetOrder();
+                        $scope.detailorder = null;
+                        $scope.isAddOrder = false;
+                        $scope.selectedOrder = {};
+                        $scope.new = {};
+                        $('#myModal2').modal('hide');
+                    })
+                }
                 
-                alert('silahkan pilih menu');
             } else {
-                
-                $scope.new = {
-                    "Name": $scope.Name,
-                    "TypeID": $scope.typeID,
-                    "TableID": $scope.tableID,
-                    "OrderItem": $scope.orderedItems
-                };
-                console.log($scope.new);
+                if ($scope.Name = '') {
+                    alert('Silahkan isi nama');
+                } else {
+                    $scope.new = {
+                        "Name": $scope.Name,
+                        "TypeID": $scope.typeID,
+                        "TableID": $scope.tableID,
+                        "OrderItem": $scope.orderedItems
+                    };
+                    console.log($scope.new);
 
-                console.log('trigger+',$scope.Name);
+                    console.log('trigger+', $scope.Name);
 
-                testService.Name = $scope.Name;
-                testService.TypeID = $scope.typeID;
-                testService.TableID = $scope.tableID;
-                testService.OrderItem = $scope.orderedItems;
-                
-                //testservice.data = $scope.new;
-                testService.$NewOrder().then(function (data) {
-                    console.log(data);
-                    $scope.order = testservice.GetOrder();
-                    $scope.detailorder = null;
-                  
-               
-                });
-            }            
+                    testService.Name = $scope.Name;
+                    testService.TypeID = $scope.typeID;
+                    testService.TableID = $scope.tableID;
+                    testService.OrderItem = $scope.orderedItems;
+
+                    //testservice.data = $scope.new;
+                    testService.$NewOrder().then(function (data) {
+                        console.log(data);
+                        $scope.order = testservice.GetOrder();
+                        $scope.detailorder = null;
+                        $('#myModal2').modal('hide');
+                    });
+                }                
+            }
         }
     };
 
