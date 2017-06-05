@@ -56,7 +56,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
     $scope.edit = function () {
         $scope.test = true;
         $scope.isEditMode = true;
-        console.log($scope.test);
+        //console.log($scope.test);
     };
 
     $scope.editall = function () {
@@ -317,17 +317,20 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                 };
                 console.log($scope.new);
 
+                console.log('trigger+',$scope.Name);
+
                 testService.Name = $scope.Name;
                 testService.TypeID = $scope.typeID;
                 testService.TableID = $scope.tableID;
                 testService.OrderItem = $scope.orderedItems;
-
+                
                 //testservice.data = $scope.new;
                 testService.$NewOrder().then(function (data) {
                     console.log(data);
                     $scope.order = testservice.GetOrder();
                     $scope.detailorder = null;
-                    $('#myModal2').modal('hide');
+                  
+                    angular.element('#myModal2').modal('hide');
                 });
             }            
         }

@@ -271,13 +271,12 @@
                     <h4>{{baru.TableName}}</h4>
                 </div>
                 <div ng-show="typeID == 2">
-                    <div ng-if="!isAddOrder">
-                        <h4 class="modal-title">Input Name Here</h4>
-                        <input ng-model="Name" />
-                    </div>
-                    <div ng-if="isAddOrder">
-                        <h4 class="modal-title">{{Name}}</h4>
-                    </div>
+                  
+                        <h4 ng-if="isAddOrder === false" class="modal-title">Input Name Here</h4>
+                        <input ng-show="isAddOrder === false" type="text" ng-model="Name" />
+                        <h4 ng-if="isAddOrder === true" class="modal-title">{{Name}}</h4>
+            
+                    
                 </div>
                 <p>Choose Menu</p>
             </div>
@@ -342,7 +341,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" ng-click="CreateOrder()" >Order</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="CreateOrder()" >Order</button>
             </div>
         </div>
     </div>
