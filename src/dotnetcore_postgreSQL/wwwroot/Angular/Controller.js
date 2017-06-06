@@ -195,9 +195,10 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                 if (data.Status === true) {
                     console.log("Success");
                     $scope.print('DetailOrder');
-                    $scope.order = testservice.GetOrder();
-                    $scope.detailorder = null;
-
+                    $timeout(function () {
+                        $scope.order = testservice.GetOrder();
+                        $scope.detailorder = null;
+                    },500)
                 } else {
                     console.log("Failed");
                 }
@@ -299,6 +300,7 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
     $scope.new = {};
     $scope.CreateOrder = function () {
+        console.log('test');
         //console.log($s, tableid)
         if ($scope.orderedItems < 1) {
 
