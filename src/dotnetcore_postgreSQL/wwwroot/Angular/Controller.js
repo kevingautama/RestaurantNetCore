@@ -195,9 +195,10 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                 if (data.Status === true) {
                     console.log("Success");
                     $scope.print('DetailOrder');
-                    $scope.order = testservice.GetOrder();
-                    $scope.detailorder = null;
-
+                    $timeout(function () {
+                        $scope.order = testservice.GetOrder();
+                        $scope.detailorder = null;
+                    },500)
                 } else {
                     console.log("Failed");
                 }
