@@ -333,7 +333,9 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                     };
                     console.log($scope.new);
 
-                    console.log('trigger+', $scope.Name);
+                    console.log('trigger+', $scope.Name);                    
+                    
+                    testService = new testservice();
 
                     testService.Name = $scope.Name;
                     testService.TypeID = $scope.typeID;
