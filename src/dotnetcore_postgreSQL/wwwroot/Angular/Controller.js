@@ -304,11 +304,10 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
         if ($scope.orderedItems < 1) {
 
             alert('silahkan pilih menu');
+            
         } else {
-            if($scope.isAddOrder) {
-                if ($scope.Name = '') {
-                    alert('Silahkan isi nama');
-                } else {
+            if ($scope.isAddOrder) {
+               
                     $scope.new = {
                         "OrderID": $scope.orderID,
                         "OrderItem": $scope.orderedItems
@@ -324,13 +323,9 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                         $scope.selectedOrder = {};
                         $scope.new = {};
                         $('#myModal2').modal('hide');
-                    })
-                }
-                
-            }else {
-                if($scope.Name = '') {
-                    alert('Silahkan isi nama');
-                }else {
+                    })                
+            } else {
+
                     $scope.new = {
                         "Name": $scope.Name,
                         "TypeID": $scope.typeID,
@@ -346,14 +341,17 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                     testService.TableID = $scope.tableID;
                     testService.OrderItem = $scope.orderedItems;
 
-                    //testservice.data = $scope.new;
-                    testService.$NewOrder().then(function (data) {
-                        console.log(data);
-                        $scope.order = testservice.GetOrder();
-                        $scope.detailorder = null;
-                        $('#myModal2').modal('hide');
-                    });
-                }                
+                //testservice.data = $scope.new;
+                    if ($scope.Name == '') {
+                        alert('Silahkan isi Nama');
+                    } else {
+                        testService.$NewOrder().then(function (data) {
+                            console.log(data);
+                            $scope.order = testservice.GetOrder();
+                            $scope.detailorder = null;
+                            $('#myModal2').modal('hide');
+                        });
+                    }               
             }
         }
     };
