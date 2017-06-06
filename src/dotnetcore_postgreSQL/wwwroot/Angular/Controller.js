@@ -299,12 +299,13 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
 
     $scope.new = {};
     $scope.CreateOrder = function () {
+        console.log('test');
         //console.log($s, tableid)
         if ($scope.orderedItems < 1) {
 
             alert('silahkan pilih menu');
         } else {
-            if ($scope.isAddOrder) {
+            if($scope.isAddOrder) {
                 if ($scope.Name = '') {
                     alert('Silahkan isi nama');
                 } else {
@@ -326,10 +327,10 @@ controller.controller('testcontroller', function ($scope, testservice, kitchense
                     })
                 }
                 
-            } else {
-                if ($scope.Name = '') {
+            }else {
+                if($scope.Name = '') {
                     alert('Silahkan isi nama');
-                } else {
+                }else {
                     $scope.new = {
                         "Name": $scope.Name,
                         "TypeID": $scope.typeID,
